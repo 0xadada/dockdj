@@ -1,2 +1,2 @@
-# aws-docker-python-django-recipe
-:ship: A recipe for deploying Amazon AWS multi-container Python / Django Docker containers.
+# Dockdj
+:ship: A recipe for deploying multi-container NGINX Python / Django apps to Amazon AWS using Elastic Beanstalk.
