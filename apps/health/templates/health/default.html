@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Health - {{ block.super }}{% endblock title %}
+{% block global_title %}Health{% endblock global_title %}
+{% block body_class %}c-Body---Health c-Health{% endblock body_class %}
+
+
+{% block meta %}
+  <meta name="description" content="Health">
+  <meta name="keywords" content="Health">
+  <meta property="og:title" content="Health">
+  <meta property="og:description" content="Health check and diagnostics.">
+  <meta property="og:type"  content="website">
+{% endblock meta %}
+
+
+{% block content %}
+  <p>Message: {{ message }}</p>
+
+  <h2>Environment variables:</h2>
+
+  <ul class="list-group">
+  {% for env_var in env_vars %}
+    <li class="list-group-item">{{ env_var }}
+  {% endfor %}
+  </ul>
+{% endblock content %}
+
+
+{% block javascript %}
+  {{ block.super }}
+{% endblock javascript %}

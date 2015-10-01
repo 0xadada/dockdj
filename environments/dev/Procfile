@@ -1,0 +1,9 @@
+# Development Procfile
+# Author Ron. A @0xADADA
+
+
+# The webserver: Python
+webserver: ./manage.py runserver_plus 0.0.0.0:8080
+
+# The CDN assets emulation server
+cdnserver: cd /var/app/dist && python -m http.server 8010

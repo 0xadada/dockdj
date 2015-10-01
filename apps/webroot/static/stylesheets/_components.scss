@@ -1,0 +1,44 @@
+/* ===== Components ====================================================
+ * Components
+ * Fully designed pieces of UI, Still only utilizes class selectors. More
+ * expliciltly named (e.g. products-list).
+ * This is where the sculptor adds the features.
+ */
+
+ /* ===== c-GlobalHeader ===============================================
+  * The global site navigation atop every page.
+  * c-GlobalHeader
+  * c-GlobalHeader--Nav
+  * c-GlobalHeader--NavList
+  * c-GlobalHeader--NavItem
+  * c-GlobalHeader--NavLink
+  */
+
+.c-GlobalHeader {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.c-GlobalHeader--Nav {
+    border-radius: 0;
+}
+
+.c-GlobalHeader--NavLink {
+    font-size: 1.25em;
+}
+.c-GlobalHeader--NavLink.navbar-brand {
+    margin-right: 3rem;
+}
+
+
+/* ===== c-Content =====================================================
+ * The global site navigation atop every page.
+ * c-Content
+ */
+
+.c-Content {
+    margin-top: 9em;
+}

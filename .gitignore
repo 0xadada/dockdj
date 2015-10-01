@@ -1,0 +1,40 @@
+# .gitignore
+
+# Ignore application dependencies
+# We don't want deps. built for OS X/Windows winding up on a linux
+# instance, etc. Let the container provision its own dependencies.
+node_modules
+
+# Always-ignore these files and folders
+*.diff
+*.err
+*.log
+*.orig
+*.rej
+*.swn
+*.swo
+*.swp
+._*
+*~
+
+# Ignore OS generated files #
+.DS_Store*
+Icon?
+Thumbs.db
+
+# Python bytecode
+__pycache__
+
+# Environment stuff
+.python-version
+environments/*/.env
+environments/*/pyvenv
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# Built testing and static asset artifacts
+dist
+_SpecRunner.html

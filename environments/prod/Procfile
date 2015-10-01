@@ -1,0 +1,6 @@
+# Production Procfile
+# Author Ron. A @0xADADA
+
+
+# The webserver: Gunicorn
+webserver: gunicorn -c /etc/gunicorn/gunicorn.conf.py project.wsgi:application

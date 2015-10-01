@@ -1,0 +1,57 @@
+# .ebignore
+#
+# You can tell the EB CLI to ignore certain files in your project
+# directory with a .ebignore file. This file works like a .gitignore.
+# When you deploy your project directory to Elastic Beanstalk and create
+# a new application version, the EB CLI will not include files specified
+# by the .ebignore in the source bundle that it creates. This is useful
+# for creating smaller packages by excluding files that aren't required
+# for running production-only code.
+
+# MOST IMPORTANTLY, THIS FILE DOES **NOT** IGNORE DIST, its required
+# for deployment.
+
+# Ignore application dependencies
+# We don't want deps. built for OS X/Windows winding up on a linux
+# instance, etc. Let the container provision its own dependencies.
+node_modules
+
+# What follows is the standard .gitignore files.
+
+# .gitignore
+.gitignore
+.git/*
+
+# Always-ignore these files and folders
+*.diff
+*.err
+*.log
+*.orig
+*.rej
+*.swn
+*.swo
+*.swp
+._*
+*~
+
+# Ignore OS generated files #
+.DS_Store*
+Icon?
+Thumbs.db
+
+# Python bytecode
+__pycache__
+
+# Environment stuff
+.python-version
+environments/dev
+environments/dev/*
+environments/local
+environments/local/*
+environments/*/.env
+environments/*/pyvenv
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

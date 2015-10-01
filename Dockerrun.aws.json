@@ -1,0 +1,92 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "_uncomment_authentication": {
+        "bucket": "<AWS S3 bucket name>",
+        "key": "<path to configuration file e.g.: index.docker.io/.dockercfg>",
+        "note": "remove _uncomment_ to enable authentication with a private Docker repo"
+    },
+    "volumes": [
+        {
+            "name": "django",
+            "host": {
+                "sourcePath": "/var/app/current"
+            }
+        },
+        {
+            "name": "gunicorn-conf",
+            "host": {
+                "sourcePath": "/var/app/current/images/django/gunicorn.conf.py"
+            }
+        },
+        {
+            "name": "nginx-conf",
+            "host": {
+                "sourcePath": "/var/app/current/images/nginx/nginx.conf"
+            }
+        },
+        {
+            "name": "nginx-sites-enabled",
+            "host": {
+                "sourcePath": "/var/app/current/images/nginx/sites-enabled.conf"
+            }
+        }
+    ],
+    "containerDefinitions": [
+        {
+            "name": "django",
+            "image": "naralogics/stem_django:latest",
+            "essential": true,
+            "memory": 512,
+            "mountPoints": [
+                {
+                    "sourceVolume": "django",
+                    "containerPath": "/var/app"
+                },
+                {
+                    "sourceVolume": "gunicorn-conf",
+                    "containerPath": "/etc/gunicorn/gunicorn.conf.py",
+                    "readOnly": true
+                },
+                {
+                    "sourceVolume": "awseb-logs-django",
+                    "containerPath": "/var/log/gunicorn"
+                }
+            ]
+        },
+        {
+            "name": "nginx",
+            "image": "nginx",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": [
+                "django"
+            ],
+            "mountPoints": [
+                {
+                    "sourceVolume": "nginx-static",
+                    "containerPath": "/usr/share/nginx/html/static"
+                },
+                {
+                    "sourceVolume": "nginx-conf",
+                    "containerPath": "/etc/nginx/nginx.conf",
+                    "readOnly": true
+                },
+                {
+                    "sourceVolume": "nginx-sites-enabled",
+                    "containerPath": "/etc/nginx/conf.d/default.conf",
+                    "readOnly": true
+                },
+                {
+                    "sourceVolume": "awseb-logs-nginx",
+                    "containerPath": "/var/log/nginx"
+                }
+            ]
+        }
+    ]
+}

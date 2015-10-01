@@ -1,0 +1,218 @@
+#!/usr/bin/env bash
+# Release and deploy process management.
+# Author Ron. A @0xADADA
+
+
+# Print out help documentation
+help_usage() {
+    echo "Utility to more easily release and deploy code."
+    echo ""
+    echo "Usage: $ deploy COMMAND <version>"
+    echo ""
+    help_commands
+    echo "version follows the format M.m.p where:"
+    echo "    M Major - Release includes incompatible API changes"
+    echo "    m Minor - Added backwards compatible features"
+    echo "    p Patch - Backwards compatible patch or bugfixes"
+    echo ""
+    echo "e.g."
+    echo "$ $0 publish 1.2.3"
+}
+
+
+# Print out commands
+help_commands() {
+    echo "The commands are:"
+    echo "    release  Tag and create a release branch and Docker image"
+    echo "    publish  Push branch & tag, push image to Docker Hub"
+    echo "    deploy   Deploy release to Amazon AWS Elastic Beanstalk"
+    echo ""
+}
+
+
+# Tag and create a release branch and Docker image
+release() {
+    docker images | grep -iq "prod_django"
+    NO_IMAGE=$?
+    # if image is missing:
+    if [ $NO_IMAGE == 1 ]; then
+        # No production image exists, prompt user to build one
+        echo "Error: No image exists."
+        echo ""
+        echo "Try:"
+        echo "'./bin/image prod build' to build a production image."
+        exit 1
+    fi
+
+    # Fetch all latest branches and tags from GitHub
+    git fetch origin > /dev/null 2>&1
+
+    # If this release is a hotfix:
+    if [ $PATCH -gt 0 ]; then
+        # ToDo: Verify that the release branch exists
+        git branch --list --all | grep -iq "remotes/origin/release-v$MAJOR_MINOR"
+        NO_RELEASE=$?
+        if [ $NO_RELEASE == 0 ]; then
+            # Branch exists, checkout the release branch
+            git checkout "release-v$MAJOR_MINOR"
+        else
+            # Release branch doesn't exist, throw error.
+            echo "Error: Release branch 'release-v$MAJOR_MINOR' not found."
+            echo "    Cannot create a PATCH release without an original release."
+            exit 1
+        fi
+
+    # Else this release branches off master
+    else
+        # Checkout master
+        git checkout -f master
+    fi
+
+    # Tag the docker image
+    echo "Tagging Docker image:"
+    echo "    $REPO_NAME:$VERSION"
+    echo "    $REPO_NAME:latest"
+    docker tag -f "prod_django" "$REPO_NAME:$VERSION"
+    docker tag -f "prod_django" "$REPO_NAME:latest"
+
+    # Tag with version vM.m.p
+    echo "Tagging branch: v$VERSION"
+    git tag -a "v$VERSION" \
+        -m "Release v$VERSION" \
+        -m ""
+        -m "`git log $(git describe --abbrev=0 --tags).. --pretty=format:"* %s - @%an"`"
+
+    # If this release is a new release, create release branch.
+    if [ $PATCH == 0 ]; then
+        # Create release branch
+        echo "Creating a release branch: release-v$MAJOR_MINOR"
+        git checkout -b "release-v$MAJOR_MINOR"
+    fi
+
+    # wrap up
+    echo ""
+    echo "Release complete."
+    echo "    On branch: release-v$MAJOR_MINOR"
+    exit $?
+}
+
+
+# Push branch & tag, push image to Docker Hub and code to GitHub.
+publish() {
+    docker images | grep -iq "$ENV_DOCKER_HUB_REPO_PATH"
+    NO_IMAGE=$?
+    # if image is missing:
+    if [ $NO_IMAGE == 1 ]; then
+        # No production image exists, prompt user to build one
+        echo "Error: No image tagged with this version exists."
+        echo ""
+        echo "Try:"
+        echo "'./bin/deploy release $VERSION' to tag this version."
+        exit 1
+    fi
+
+    # Push image to docker Hub
+    echo "Docker Hub repo path: $ENV_DOCKER_HUB_REPO_PATH"
+    echo "Publishing image to Docker Hub..."
+    echo "    $ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+    echo "    $ENV_DOCKER_HUB_REPO_PATH:latest"
+    docker push "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+    docker push "$ENV_DOCKER_HUB_REPO_PATH:latest"
+
+    # Push release branch to GitHub
+    echo "Publishing release branch & tags to GitHub..."
+    echo "    release-v$MAJOR_MINOR"
+    git push --tags origin "release-v$MAJOR_MINOR"
+
+    # wrap up
+    echo ""
+    echo "Publish complete."
+    exit $?
+}
+
+
+# Deploy release to Amazon AWS Elastic Beanstalk.
+deploy() {
+    # Set the default environment
+    eb use $ENV_AWS_EB_ENV
+    # Attempt to deploy if the environment is ready
+    eb status | grep -iq "Status: Ready"
+    NOT_READY=$?
+    # if image is missing:
+    if [ $NOT_READY == 1 ]; then
+        # No environment is deployed and healthy, error.
+        echo "Error: Elastic Beanstalk environment doesn't exist or isn't ready."
+        exit 1
+    fi
+    # Deploy to elastic beanstalk
+    echo "Amazon AWS Elastic Beanstalk environment name: $ENV_AWS_EB_ENVIRONMENT_NAME"
+    echo "Deploying release to Amazon AWS Elastic Beanstalk..."
+
+    eb deploy
+    DEPLOY_STATUS=$?
+
+    # wrap up
+    echo ""
+    echo "Deploy complete."
+    exit $DEPLOY_STATUS
+}
+
+
+# If no arguments were provided, display the usage.
+if [[ "$#" == "0" ]]; then
+    help_usage
+    exit 1
+fi
+
+# Check that command argument exists and is valid.
+COMMAND=$1
+if [[ -z $COMMAND ]] || \
+    [[ $COMMAND != "release" && \
+    $COMMAND != "publish" && \
+    $COMMAND != "deploy" ]]; then
+    echo "Error: Specify a valid command."
+    echo ""
+    help_commands
+    exit 1
+fi
+
+# Get the version number from the arguments
+VERSION=$2
+if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9] ]]; then
+    echo $COMMAND "v"$VERSION
+    MAJOR_MINOR=$(echo $VERSION | grep -oE '^[0-9]+\.[0-9]+')
+    PATCH=$(echo $VERSION | grep -oE '[0-9]$')
+else
+    echo "Error: Version number must follow SemVer syntax: n.n.n"
+    echo ""
+    exit 1
+fi
+
+# Check the Amazon AWS Environment name sourced from the .env file.
+source environments/dev/.env
+if [ -z $ENV_AWS_EB_ENVIRONMENT_NAME ]; then
+    echo "Error: ENV_AWS_EB_ENVIRONMENT_NAME must be set in .env file"
+    echo ""
+    exit 1
+fi
+
+# Check hat a Docker Hub repo user/path value sourced from the .env file.
+if [ -z $ENV_DOCKER_HUB_REPO_PATH ]; then
+    echo "Error: ENV_DOCKER_HUB_REPO_PATH must be set in .env file"
+    echo ""
+    exit 1
+fi
+
+if [[ $COMMAND == "release" ]]; then
+    release
+fi
+
+if [[ $COMMAND == "publish" ]]; then
+    publish
+fi
+
+if [[ $COMMAND == "deploy" ]]; then
+    deploy
+fi
+
+exit 0

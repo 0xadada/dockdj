@@ -1,0 +1,13 @@
+{
+    "adjoining-classes"            : false,
+    "box-model"                    : false,
+    "box-sizing"                   : false,
+    "import"                       : false,
+    "important"                    : false,
+    "star-property-hack"           : false,
+    "universal-selector"           : false,
+    "regex-selectors"              : true,
+    "known-properties"             : 2,
+    "overqualified-elements"       : 2,
+    "zero-units"                   : 2
+}

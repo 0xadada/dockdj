@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+# Docker image management.
+# Author Ron. A @0xADADA
+
+
+# Print out help documentation
+help_usage() {
+    echo "Utility to more easily build, update and destroy docker images."
+    echo ""
+    echo "Usage: $ image <environment> COMMAND"
+    echo ""
+    help_commands
+    echo "e.g."
+    echo "$ $0 dev build"
+}
+
+# Print out commands
+help_commands() {
+    echo "The commands are:"
+    echo "    build    create an image"
+    echo "    destroy  delete an image"
+    echo "    update   destroy and re-build an image"
+    echo ""
+}
+
+# Build a docker image.
+build() {
+    # Check environment directory exists.
+    if [[ ! -d environments/$ENV_NAME ]]; then
+        echo "Error: No environment named $ENV_NAME."
+        exit 1
+    fi
+
+    # Make sure the pyvenv directory exists.
+    # If it doesn't, create it.
+    if [[ ! -d environments/$ENV_NAME/pyvenv ]]; then
+        pyvenv environments/$ENV_NAME/pyvenv
+        echo "Error: You need to set your environment variables:"
+        echo "Notice: Copy environments/$ENV_NAME/.env.example to environments/$ENV_NAME/.env and try again."
+        exit 1
+    fi
+
+    # Set the Docker environment variables in your shell,
+    # if boot2docker exists
+    if hash boot2docker 2> /dev/null; then
+        eval "$(boot2docker shellinit)"
+    fi
+
+    # Try to detect if the django container is running.
+    docker ps | grep -iq $ENV_NAME"_django_"
+    ISRUNNING=$?
+    if [[ $ISRUNNING == 0 ]]; then
+        echo ""
+        echo "A container with that name is currently running:"
+        echo ""
+        echo "Try:"
+        echo "'$0 $ENV_NAME update' to update the image."
+    else
+        # Build Docker images
+        echo "Building Docker images..."
+        docker-compose \
+            -f environments/$ENV_NAME/docker-compose.yml \
+            build
+    fi
+}
+
+# Destroy a Docker image.
+destroy() {
+    docker ps | grep -iq $ENV_NAME"_django"
+    NO_IMAGE=$?
+    # if image is running in a container.
+    if [[ $NO_IMAGE == 0 ]]; then
+        # error
+        echo "Error: Image is currently in use by a running container."
+        echo ""
+        echo "Try:"
+        echo "'./bin/stevedore $ENV_NAME stop' to stop the container."
+        exit 1
+    # else
+    else
+        # destroy image
+        echo "Destroying Docker image" $ENV_NAME"_django..."
+        docker rmi -f $ENV_NAME"_django" &>/dev/null
+    fi
+}
+
+# Update a Docker image.
+update() {
+    docker images | grep -iq $ENV_NAME"_django"
+    NO_IMAGE=$?
+    # if image is missing:
+    if [ $NO_IMAGE == 1 ]; then
+        # create image from scratch
+        build
+    # else image already exists:
+    else
+        # destroy existing image
+        destroy
+        # create new images
+        build
+    fi
+}
+
+# If no arguments were provided, display the usage.
+if [[ "$#" == "0" ]]; then
+    help_usage
+    exit 1
+fi
+
+# Check for an environment argument.
+ENV_NAME=$1
+if [[ -z $ENV_NAME ]]; then
+    echo "Error: Specify an environment name."
+    echo ""
+    help
+    exit 1
+fi
+if [[ ! -d environments/$ENV_NAME ]]; then
+    echo "Error: The first argument needs to be an environment."
+    echo ""
+    help
+    exit 1
+fi
+
+# Check for a command argument.
+COMMAND=$2
+if [[ -z $COMMAND ]] || \
+    [[ $COMMAND != "build" && \
+    $COMMAND != "destroy" && \
+    $COMMAND != "update" ]]; then
+    echo "Error: Specify a command."
+    echo ""
+    help_commands
+    exit 1
+fi
+
+
+# Build a Docker image.
+if [[ $COMMAND == "build" ]]; then
+    build
+fi
+
+# Destroy a docker image.
+if [[ $COMMAND == "destroy" ]]; then
+    destroy
+fi
+
+# Update a docker image.
+if [[ $COMMAND == "update" ]]; then
+    update
+fi
+
+exit 0

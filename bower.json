@@ -1,0 +1,18 @@
+{
+  "name": "nara-logics-stem-bower",
+  "version": "0.1.0",
+  "homepage": "https://github.com/0xADADA/dockdj",
+  "description": ":ship: A recipe for deploying multi-container NGINX & Python / Django apps to Amazon AWS using Elastic Beanstalk.",
+  "authors": [
+    {
+      "name": "Ron. A",
+      "email": "github.com@0xadada.pub",
+      "twitter": "@0xADADA"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "4.0.0-alpha"
+  },
+  "private": true
+}

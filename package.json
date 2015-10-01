@@ -1,0 +1,25 @@
+{
+  "name": "Dockdj",
+  "version": "0.1.0",
+  "homepage": "https://github.com/0xADADA/dockdj",
+  "description": ":ship: A recipe for deploying multi-container NGINX & Python / Django apps to Amazon AWS using Elastic Beanstalk.",
+  "author": {
+    "name": "Ron. A",
+    "email": "github.com@0xadada.pub",
+    "twitter": "@0xADADA"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer-core": "^5.2.1",
+    "browser-sync": "^2.8.2",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-csslint": "^0.2.0",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rev": "^6.0.1",
+    "gulp-rev-replace": "^0.4.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.5.2",
+    "phantomjs": "^1.9.17"
+  }
+}

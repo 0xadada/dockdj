@@ -1,0 +1,17 @@
+{
+    "browser": true,
+    "curly":   true,
+    "eqeqeq":  true,
+    "evil":    true,
+    "expr":    true,
+    "forin":   false,
+    "jasmine": true,
+    "nonew":   true,
+    "undef":   true,
+    "globals": {
+        "console": true,
+        "module":  true,
+        "node":    true,
+        "phantom": true
+    }
+}

@@ -1,0 +1,339 @@
+#!/usr/bin/env bash
+# Stevedore - Simple Docker container management.
+# Author Ron. A @0xADADA
+
+
+# Print out usage documentation.
+help_usage() {
+    echo "Stevedore (stēˈvĭ-dôr) - Manhandling your containers."
+    echo "A simple utility to start, stop and interact with Docker containers."
+    echo ""
+    echo "Usage: $ stevedore <environment> COMMAND"
+    echo ""
+    help_commands
+    echo "e.g."
+    echo "$ $0 dev start"
+}
+
+# Print out commands.
+help_commands() {
+    echo "The commands are:"
+    echo "    awseb       Start a local Amazon AWS Elastic Beanstalk production container"
+    echo "    build:dev   Run development build process"
+    echo "    build:prod  Run production build process"
+    echo "    check       Run code quality and syntax checks"
+    echo "    logs        Tail container service log files"
+    echo "    shell       Return a bash shell"
+    echo "    start       Start a Docker container"
+    echo "    stop        Stop a Docker container"
+    echo "    test        Run test suites"
+    echo ""
+}
+
+# Print out not-running error.
+help_not_running() {
+    echo ""
+    echo "No Docker container is running."
+    echo ""
+    echo "Try:"
+    echo "'$ $0 $ENV_NAME start' to start the container."
+}
+
+awseb() {
+    eb local run --envvars ENV_NAME=prod
+}
+
+# Initialize the Docker environment variables.
+shellinit() {
+    # Set the Docker environment variables in your shell,
+    # if boot2docker exists
+    if hash boot2docker 2> /dev/null; then
+        eval "$(boot2docker shellinit)"
+    fi
+}
+
+# Check that a Docker image exists.
+check_image() {
+    docker images | grep -iq $ENV_NAME"_django"
+}
+
+# Check that a Docker container is running.
+check_container() {
+    docker ps | grep -iq $ENV_NAME"_django_"
+}
+
+build_dev() {
+    # init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Executing development build process: 'gulp'..."
+        echo ""
+        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+            run --no-deps \
+            django \
+            gulp
+        exit $?
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+build_prod() {
+    # init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Executing production build process: 'gulp build'..."
+        echo ""
+        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+            run --no-deps \
+            django \
+            gulp build
+        exit $?
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+check() {
+    # init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Executing code quality checks: 'gulp check'..."
+        echo ""
+        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+            run --no-deps \
+            django \
+            gulp check
+        exit $?
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+test_code() {
+    # init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Executing code tests: 'gulp test'..."
+        echo ""
+        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+            run --no-deps \
+            django \
+            gulp test
+        exit $?
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+bash_shell() {
+    # init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Executing shellcode buffer overflow to return bash shell..."
+        echo ""
+        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+            run --no-deps \
+            django \
+            bash
+        exit 0
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+# Tail Docker container log files.
+logs() {
+    # Init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Tailing Docker container logs..."
+        docker-compose \
+            -f environments/$ENV_NAME/docker-compose.yml \
+            logs
+        exit 0
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+start() {
+    # Init env vars for Docker
+    shellinit
+    # Check that a Docker image exists to run.
+    check_image
+    if [[ $? == 0 ]]; then
+        # Run images in Docker containers
+        echo ""
+        echo "Running Docker containers..."
+
+        # Manually run
+        # docker run \
+        #     -it \
+        #     -p 80:8080 \
+        #     -p 8010:8010 \
+        #     --rm \
+        #     -e STEM_ENV=$ENV_NAME \
+        #     -e STEM_DEBUG=$STEM_DEBUG \
+        #     -e STEM_CDN=//`boot2docker ip`:8010/ \
+        #     -e STEM_SECRET_KEY=$STEM_SECRET_KEY \
+        #     -v $(pwd)/apps:/var/app/apps \
+        #     --name com.naralogics.mri.django \
+        #     com-naralogics-mri-django
+        docker-compose \
+            --verbose \
+            -f environments/$ENV_NAME/docker-compose.yml \
+            up \
+            -d
+
+        # If Docker ran successfully, open and view logs
+        if [[ $? == 0 ]]; then
+            echo ""
+            echo "Opening browser and tailing logs..."
+            # Open in a browser
+            sleep 4 # Give the container a few seconds to spin up.
+            open http://`boot2docker ip`/health # Open in the browser.
+
+            # Show the logs
+            docker-compose \
+                -f environments/$ENV_NAME/docker-compose.yml \
+                logs
+            exit 0
+        else
+            echo ""
+            echo "Error: Docker failed to run the container."
+            exit 1
+        fi
+    else
+        echo ""
+        echo "No Docker image exists that I can run."
+        echo ""
+        echo "Try:"
+        echo "'$./bin/image $ENV_NAME build' to build the image."
+        exit 1
+    fi
+}
+
+# Stop any running Docker containers.
+stop() {
+    # Init env vars for Docker
+    shellinit
+    # Check that a Docker container is running.
+    check_container
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "Stopping docker containers..."
+        echo ""
+        docker-compose \
+            -f environments/$ENV_NAME/docker-compose.yml \
+            stop
+        exit 0
+    else
+        help_not_running
+        exit 1
+    fi
+}
+
+# If no arguments were provided, display the usage.
+if [[ "$#" == "0" ]]; then
+    help_usage
+    exit 1
+fi
+
+# Check for an environment argument.
+ENV_NAME=$1
+if [[ -z $ENV_NAME ]]; then
+    echo "Error: Specify an environment name."
+    echo ""
+    help
+    exit 1
+fi
+
+# Check for a command argument.
+COMMAND=$2
+if [[ -z $COMMAND ]] || \
+    [[ $COMMAND != "awseb" && \
+    $COMMAND != "build:dev" && \
+    $COMMAND != "build:prod" && \
+    $COMMAND != "check" && \
+    $COMMAND != "logs" && \
+    $COMMAND != "shell" && \
+    $COMMAND != "start" && \
+    $COMMAND != "stop" && \
+    $COMMAND != "test" ]]; then
+    echo "Error: Specify a command."
+    echo ""
+    help_commands
+    exit 1
+fi
+
+# Run local Amazon Elastic Beanstalk container.
+if [[ $COMMAND == "awseb" ]]; then
+    awseb
+fi
+
+# Run development build process.
+if [[ $COMMAND == "build:dev" ]]; then
+    build_dev
+fi
+
+# Run production build process.
+if [[ $COMMAND == "build:prod" ]]; then
+    build_prod
+fi
+
+# Run production build process.
+if [[ $COMMAND == "check" ]]; then
+    check
+fi
+
+# Destroy a docker image.
+if [[ $COMMAND == "logs" ]]; then
+    logs
+fi
+
+# Start a Docker container.
+if [[ $COMMAND == "shell" ]]; then
+    bash_shell
+fi
+
+# Start a Docker container.
+if [[ $COMMAND == "start" ]]; then
+    start
+fi
+
+# Update a docker image.
+if [[ $COMMAND == "stop" ]]; then
+    stop
+fi
+
+# Run jasmine unit tests.
+if [[ $COMMAND == "test" ]]; then
+    test_code
+fi
+
+exit 0
