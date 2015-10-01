@@ -34,7 +34,7 @@
     "containerDefinitions": [
         {
             "name": "django",
-            "image": "naralogics/stem_django:latest",
+            "image": "0xadada/dockdj:latest",
             "essential": true,
             "memory": 512,
             "mountPoints": [
