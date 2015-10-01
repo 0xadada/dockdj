@@ -79,7 +79,7 @@ release() {
     echo "Tagging branch: v$VERSION"
     git tag -a "v$VERSION" \
         -m "Release v$VERSION" \
-        -m ""
+        -m "" \
         -m "`git log $(git describe --abbrev=0 --tags).. --pretty=format:"* %s - @%an"`"
 
     # If this release is a new release, create release branch.
