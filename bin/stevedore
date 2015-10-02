@@ -197,13 +197,13 @@ start() {
         #     -p 80:8080 \
         #     -p 8010:8010 \
         #     --rm \
-        #     -e STEM_ENV=$ENV_NAME \
-        #     -e STEM_DEBUG=$STEM_DEBUG \
-        #     -e STEM_CDN=//`boot2docker ip`:8010/ \
-        #     -e STEM_SECRET_KEY=$STEM_SECRET_KEY \
+        #     -e ENV_NAME=$ENV_NAME \
+        #     -e ENV_DEBUG=$ENV_DEBUG \
+        #     -e ENV_CDN=//`boot2docker ip`:8010/ \
+        #     -e ENV_SECRET_KEY=$STEM_SECRET_KEY \
         #     -v $(pwd)/apps:/var/app/apps \
-        #     --name com.naralogics.mri.django \
-        #     com-naralogics-mri-django
+        #     --name django \
+        #     django
         docker-compose \
             --verbose \
             -f environments/$ENV_NAME/docker-compose.yml \

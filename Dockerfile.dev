@@ -15,7 +15,6 @@ ADD             . /var/app
 
 # Install apt, Python then NodeJS dependencies.
 RUN             apt-get update && \
-                apt-get install -y libmysqlclient-dev && \
                 curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
                 apt-get install -y nodejs && \
                 pip install --upgrade pip && \
