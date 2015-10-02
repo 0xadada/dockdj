@@ -25,8 +25,8 @@ var config = {
     csslint: {
         csslintrc: '.csslintrc.json',
         src: [
-            'apps/*/static/**/*.css',
-            '!apps/*/static/vendor/**/*'
+            'app/apps/*/static/**/*.css',
+            '!app/apps/*/static/vendor/**/*'
           ]
     },
     minifyCss: {
@@ -38,13 +38,13 @@ var config = {
         }
     },
     revReplace : {
-        manifest: 'dist/stylesheets/rev-manifest.json',
-        template: 'apps/base/templates/base/base.html',
-        templateDir: 'apps/base/templates/base/'
+        manifest: 'app/dist/stylesheets/rev-manifest.json',
+        template: 'app/apps/base/templates/base/base.html',
+        templateDir: 'app/apps/base/templates/base/'
     },
     sass: {
-        src: 'apps/webroot/static/stylesheets/all.scss',
-        dest: 'dist/stylesheets',
+        src: 'app/apps/webroot/static/stylesheets/all.scss',
+        dest: 'app/dist/stylesheets',
         options: {
             style: 'compressed',
             precision: 8
@@ -54,7 +54,7 @@ var config = {
         proxy: '<192.168.59.nn>' /* Set by 'run:browser-sync' */
     },
     watch: {
-        sassSrc: ['apps/*/static/**/*.scss']
+        sassSrc: ['app/apps/*/static/**/*.scss']
     }
 };
 
@@ -72,7 +72,7 @@ gulp.task('check:python', function() {
     require('child_process')
     .spawn('pep257', [
             "--match-dir='(?!migrations).*'",
-            'apps'
+            'app/apps'
         ],
         { stdio: 'inherit' }
     );
@@ -85,7 +85,7 @@ gulp.task('test:unit', function() {
                 'test',
                 '-p', 'test_*.py',
                 '--failfast',
-                'apps'
+                'app/apps'
             ],
             { stdio: 'inherit' }
         );
@@ -170,7 +170,7 @@ gulp.task('watch', function() {
  */
 gulp.task('collectstatic', function() {
     require('child_process')
-    .spawn('./manage.py', [
+    .spawn('./app/manage.py', [
             'collectstatic',
             '--noinput'
         ],

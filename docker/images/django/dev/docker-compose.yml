@@ -3,8 +3,8 @@ django:
   dockerfile: docker/images/django/dev/Dockerfile
   env_file: ../../../../environments/dev/.env
   volumes:
-    - "../../../../apps:/var/app/apps"
-    - "../../../../dist:/var/app/dist"
+    - "../../../../app:/var/app/app"
+    - "../../../../app/dist:/var/app/app/dist"
     - "../../../../environments:/var/app/environments"
     - "../../../../project:/var/app/project"
   ports:

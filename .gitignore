@@ -36,5 +36,5 @@ environments/*/pyvenv
 !.elasticbeanstalk/*.global.yml
 
 # Built testing and static asset artifacts
-dist
+app/dist
 _SpecRunner.html

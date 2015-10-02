@@ -71,7 +71,7 @@ build_dev() {
         echo ""
         echo "Executing development build process: 'gulp'..."
         echo ""
-        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+        docker-compose -f docker/images/django/$ENV_NAME/docker-compose.yml \
             run --no-deps \
             django \
             gulp

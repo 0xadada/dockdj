@@ -3,4 +3,4 @@
 
 
 # The webserver: Gunicorn
-webserver: gunicorn -c /etc/gunicorn/gunicorn.conf.py project.wsgi:application
+webserver: cd app && gunicorn -c /etc/gunicorn/gunicorn.conf.py project.wsgi:application

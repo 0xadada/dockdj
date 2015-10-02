@@ -380,7 +380,7 @@ else:
 # it can find and put them here. They can then be served from this
 # location, or uploaded to a CDN, or whathave you.
 # https://docs.djangoproject.com/en/1.8/ref/settings/#std:setting-STATIC_ROOT
-STATIC_ROOT = 'dist'
+STATIC_ROOT = 'app/dist'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "apps/webroot/static"),
