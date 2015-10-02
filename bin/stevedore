@@ -91,7 +91,7 @@ build_prod() {
         echo ""
         echo "Executing production build process: 'gulp build'..."
         echo ""
-        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+        docker-compose -f docker/images/django/$ENV_NAME/docker-compose.yml \
             run --no-deps \
             django \
             gulp build
@@ -111,7 +111,7 @@ check() {
         echo ""
         echo "Executing code quality checks: 'gulp check'..."
         echo ""
-        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+        docker-compose -f docker/images/django/$ENV_NAME/docker-compose.yml \
             run --no-deps \
             django \
             gulp check
@@ -131,7 +131,7 @@ test_code() {
         echo ""
         echo "Executing code tests: 'gulp test'..."
         echo ""
-        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+        docker-compose -f docker/images/django/$ENV_NAME/docker-compose.yml \
             run --no-deps \
             django \
             gulp test
@@ -151,7 +151,7 @@ bash_shell() {
         echo ""
         echo "Executing shellcode buffer overflow to return bash shell..."
         echo ""
-        docker-compose -f environments/$ENV_NAME/docker-compose.yml \
+        docker-compose -f docker/images/django/$ENV_NAME/docker-compose.yml \
             run --no-deps \
             django \
             bash
@@ -172,7 +172,7 @@ logs() {
         echo ""
         echo "Tailing Docker container logs..."
         docker-compose \
-            -f environments/$ENV_NAME/docker-compose.yml \
+            -f docker/images/django/$ENV_NAME/docker-compose.yml \
             logs
         exit 0
     else
@@ -206,7 +206,7 @@ start() {
         #     django
         docker-compose \
             --verbose \
-            -f environments/$ENV_NAME/docker-compose.yml \
+            -f docker/images/django/$ENV_NAME/docker-compose.yml \
             up \
             -d
 
@@ -220,7 +220,7 @@ start() {
 
             # Show the logs
             docker-compose \
-                -f environments/$ENV_NAME/docker-compose.yml \
+                -f docker/images/django/$ENV_NAME/docker-compose.yml \
                 logs
             exit 0
         else
@@ -249,7 +249,7 @@ stop() {
         echo "Stopping docker containers..."
         echo ""
         docker-compose \
-            -f environments/$ENV_NAME/docker-compose.yml \
+            -f docker/images/django/$ENV_NAME/docker-compose.yml \
             stop
         exit 0
     else

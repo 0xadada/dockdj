@@ -59,7 +59,7 @@ build() {
         # Build Docker images
         echo "Building Docker images..."
         docker-compose \
-            -f environments/$ENV_NAME/docker-compose.yml \
+            -f docker/images/django/$ENV_NAME/docker-compose.yml \
             build
     fi
 }
