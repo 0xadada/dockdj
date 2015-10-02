@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-us" class="no-js">
+<head>{% load staticfiles %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+  {% block title %}Dockdj{% endblock title %}
+  </title>
+
+{% block dnsprefetch %}
+  {# Always do your DNS prefetch above any external CSS or JS #}
+{% endblock dnsprefetch %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static "stylesheets/all.css" %}">
+{% endblock stylesheets %}
+
+{% block meta %}
+  <meta name="description" content="Dockdj">
+  <meta name="keywords" content="Dockdj">
+{% endblock meta %}
+</head>
+
+<body class="c-Body {% block body_class %}{% endblock body_class %}">
+  <div class="c-Content container">
+
+  {% block content_nav %}
+  {% endblock content_nav %}
+
+  {% block content %}
+  {% endblock content %}
+
+  </div>
+
+  <header class="c-GlobalHeader">
+    <nav class="c-GlobalHeader--Nav navbar navbar-dark bg-inverse">
+      <div class="container">
+        <a class="c-GlobalHeader--NavLink navbar-brand" href="/" title="Home">
+          <img src="//placeholdit.imgix.net/~text?txtsize=16&bg=0099ff&txtclr=ffffff&txt=Dockdj&w=175&h=40&fm=png"
+            alt>
+        </a>
+
+        <ul class="c-GlobalHeader--NavList nav navbar-nav">
+        {% block global_nav %}
+
+          {% block global_nav_health %}
+
+          <li class="c-GlobalHeader--NavItem nav-item">
+            <a class="c-GlobalHeader--NavLink nav-link"
+              href="{% url "health" %}"
+              title="Health">Health</a>
+          </li>
+          {% endblock global_nav_health %}
+
+        {% endblock global_nav %}
+        </ul>
+      </div>
+    </nav>
+    <h1 class="c-GlobalHeadline container m-t">
+    {% block global_title %}Dockdj{% endblock global_title %}
+    </h1>
+  </header>
+
+{% block javascript %}
+  {# Load javascript at the bottom to decrease js-blocking #}
+  {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> #}
+  {# <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script> #}
+{% endblock javascript %}
+
+</body>
+</html>
