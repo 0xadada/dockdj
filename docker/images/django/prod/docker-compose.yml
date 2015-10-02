@@ -3,17 +3,17 @@ django:
   dockerfile: docker/images/django/prod/Dockerfile
   env_file: ../../../../environments/prod/.env
   volumes:
-    - "../../../..docker/images/django/prod/gunicorn.conf.py:/etc/gunicorn/gunicorn.conf.py:ro"
-    - "../../../..logs/gunicorn:/var/log/gunicorn"
+    - "../../../../docker/images/django/prod/gunicorn.conf.py:/etc/gunicorn/gunicorn.conf.py:ro"
+    - "../../../../logs/gunicorn:/var/log/gunicorn"
 
 nginx:
   image: nginx
   links:
     - django
   volumes:
-    - "../../../..docker/images/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
-    - "../../../..docker/images/nginx/sites-enabled.conf:/etc/nginx/conf.d/default.conf:ro"
-    - "../../../..logs/nginx:/var/log/nginx"
-    - "../../../..dist:/usr/share/nginx/html/static"
+    - "../../../../docker/images/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+    - "../../../../docker/images/nginx/sites-enabled.conf:/etc/nginx/conf.d/default.conf:ro"
+    - "../../../../logs/nginx:/var/log/nginx"
+    - "../../../../dist:/usr/share/nginx/html/static"
   ports:
     - "80:80"
