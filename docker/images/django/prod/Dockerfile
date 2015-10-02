@@ -34,5 +34,5 @@ RUN             mkdir /var/log/gunicorn && \
 
 # Add our initialization script to the image and run it upon startup.
 ADD             docker/images/django/start.sh /
-ADD             docker/images/nginx/gunicorn.conf.py /etc/gunicorn/gunicorn.conf.py
+ADD             docker/images/django/prod/gunicorn.conf.py /etc/gunicorn/gunicorn.conf.py
 CMD             ["/start.sh"]
