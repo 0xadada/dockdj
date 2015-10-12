@@ -1,6 +1,6 @@
 {
   "name": "Dockdj",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/0xADADA/dockdj",
   "description": ":ship: A recipe for deploying multi-container NGINX & Python / Django apps to Amazon AWS using Elastic Beanstalk.",
   "repository": {

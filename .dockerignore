@@ -4,3 +4,14 @@
 .git
 .gitignore
 .DS_Store
+
+# Docker container installs its own (Linux) dependencies, the host may
+# run OS X or windows, so don't include pre-existing node modules.
+node_modules
+
+# Ignore files not required for the runtime.
+docs
+README.md
+ghostdriver.log
+htmlcov
+app/dist
