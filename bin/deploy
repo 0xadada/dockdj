@@ -134,7 +134,7 @@ publish() {
 # Deploy release to Amazon AWS Elastic Beanstalk.
 deploy() {
     # Set the default environment
-    eb use $ENV_AWS_EB_ENV
+    eb use $ENV_AWS_EB_ENVIRONMENT_NAME
     # Attempt to deploy if the environment is ready
     eb status | grep -iq "Status: Ready"
     NOT_READY=$?
