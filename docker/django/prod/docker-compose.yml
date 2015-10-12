@@ -1,0 +1,19 @@
+django:
+  build: ../../..
+  dockerfile: docker/django/prod/Dockerfile
+  env_file: ../../../environments/prod/.env
+  volumes:
+    - "../../../docker/django/prod/gunicorn.conf.py:/etc/gunicorn/gunicorn.conf.py:ro"
+    - "../../../logs/gunicorn:/var/log/gunicorn"
+
+nginx:
+  image: nginx
+  links:
+    - django
+  volumes:
+    - "../../../docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+    - "../../../docker/nginx/sites-enabled.conf:/etc/nginx/conf.d/default.conf:ro"
+    - "../../../logs/nginx:/var/log/nginx"
+    - "../../../app/dist:/usr/share/nginx/html/static"
+  ports:
+    - "80:80"

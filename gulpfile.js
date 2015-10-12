@@ -81,11 +81,7 @@ gulp.task('check:python', function() {
 // test:unit runs Python unit tests
 gulp.task('test:unit', function() {
     var child_process = require('child_process'),
-        proc = child_process.spawnSync('./manage.py', [
-                'test',
-                '-p', 'test_*.py',
-                '--failfast',
-                'app/apps'
+        proc = child_process.spawnSync('./bin/test', [
             ],
             { stdio: 'inherit' }
         );

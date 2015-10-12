@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Unit test runner
+# Author Ron. A @0xADADA
+
+
+
+# Run the tests
+cd app
+./manage.py test -p test_*.py --failfast apps
+
+S_CODE=$?
+
+cd ..
+# Exit with our last code.
+exit $S_CODE

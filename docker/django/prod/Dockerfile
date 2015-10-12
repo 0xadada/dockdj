@@ -3,7 +3,7 @@
 # Container OS: Debian Jessie
 # Docker: 1.6.2
 # Python: 3.4
-# Application Server: ./manage.py runserver_plus
+# Application Server: Gunicorn
 
 FROM            python:3.4
 
@@ -19,11 +19,20 @@ RUN             apt-get update && \
                 apt-get install -y nodejs && \
                 pip install --upgrade pip && \
                 pip install -r \
-                    environments/dev/requirements.txt && \
+                    environments/prod/requirements.txt && \
                 npm update && \
                 npm install -g gulp && \
                 npm install
 
+# Exposes port 8080
+EXPOSE          8080
+
+# Create app log directories and touch log files
+RUN             mkdir /var/log/gunicorn && \
+                touch /var/log/gunicorn/access.log && \
+                touch /var/log/gunicorn/error.log
+
 # Add our initialization script to the image and run it upon startup.
-ADD             docker/images/django/start.sh /
+ADD             docker/django/start.sh /
+ADD             docker/django/prod/gunicorn.conf.py /etc/gunicorn/gunicorn.conf.py
 CMD             ["/start.sh"]

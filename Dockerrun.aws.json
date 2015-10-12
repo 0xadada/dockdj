@@ -15,19 +15,19 @@
         {
             "name": "gunicorn-conf",
             "host": {
-                "sourcePath": "/var/app/current/docker/images/django/prod/gunicorn.conf.py"
+                "sourcePath": "/var/app/current/docker/django/prod/gunicorn.conf.py"
             }
         },
         {
             "name": "nginx-conf",
             "host": {
-                "sourcePath": "/var/app/current/docker/images/nginx/nginx.conf"
+                "sourcePath": "/var/app/current/docker/nginx/nginx.conf"
             }
         },
         {
             "name": "nginx-sites-enabled",
             "host": {
-                "sourcePath": "/var/app/current/docker/images/nginx/sites-enabled.conf"
+                "sourcePath": "/var/app/current/docker/nginx/sites-enabled.conf"
             }
         }
     ],
