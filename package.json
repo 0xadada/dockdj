@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "homepage": "https://github.com/0xADADA/dockdj",
   "description": ":ship: A recipe for deploying multi-container NGINX & Python / Django apps to Amazon AWS using Elastic Beanstalk.",
+  "readme": "README.md",
   "repository": {
     "type": "git",
     "url": "git://github.com/0xadada/dockdj.git"
