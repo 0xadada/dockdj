@@ -19,6 +19,12 @@
             }
         },
         {
+            "name": "nginx-static",
+            "host": {
+                "sourcePath": "/var/app/current/app/dist"
+            }
+        },
+        {
             "name": "nginx-conf",
             "host": {
                 "sourcePath": "/var/app/current/docker/nginx/nginx.conf"
