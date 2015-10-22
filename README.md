@@ -37,7 +37,7 @@ Additionally these requirements are installed:
 * Amazon Web Services
   [Elastic Beanstalk CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html)
 
-These steps will get you running:
+These steps will get you running locally:
 
 1. `./bin/install` Provisions your local development machine for
 the first time. It will
@@ -64,17 +64,17 @@ You can typically connect to your web application at:
 http://192.168.59.103/xyzzy.
 
 
+## Deployment
+
+Read more about deploying with Amazon AWS Elastic Beanstalk, version
+numbering, running deployments, hotfix / patch deployments, Docker Hub,
+and more on the [Deployments](../../wiki/Deployments) wiki page.
+
+
 ## Testing & Code Quality Tooling
 
 Read more about the set of [tools](../../wiki/Tooling) for managing,
-testing and deploying Stem.
-
-
-## Deployment
-
-Read more about Amazon AWS Elastic Beanstalk environments, version
-numbering, running deployments, hotfix / patch deployments, Docker Hub,
-and more on the [Deployments](../../wiki/Deployments) wiki page.
+testing and deploying.
 
 
 ## Authors
