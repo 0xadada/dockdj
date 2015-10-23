@@ -9,41 +9,41 @@ App principals.
 
 The Twelve Factors
 
-1. Codebase
-  One codebase tracked in revision control, many deploys
+1. Codebase<br>
+  One codebase tracked in revision control, many deploys<br>
   :white_check_mark: Yup, GitHub
-1. Dependencies
-  Explicitly declare and isolate dependencies
+1. Dependencies<br>
+  Explicitly declare and isolate dependencies<br>
   :white_check_mark: Yup, uses requirements.txt
-1. Config
-  Store config in the environment
+1. Config<br>
+  Store config in the environment<br>
   :white_check_mark: Yup, uses .env files
-1. Backing Services
-  Treat backing services as attached resources
+1. Backing Services<br>
+  Treat backing services as attached resources<br>
   :white_check_mark: BYOBacking service
-1. Build, release, run
-  Strictly separate build and run stages
+1. Build, release, run<br>
+  Strictly separate build and run stages<br>
   :white_check_mark: gulp, bin/image, bin/stevedore, bin/deploy
-1. Processes
-  Execute the app as one or more stateless processes
+1. Processes<br>
+  Execute the app as one or more stateless processes<br>
   :white_check_mark: Thanks Docker!
-1. Port binding
-  Export services via port binding
+1. Port binding<br>
+  Export services via port binding<br>
   :white_check_mark: 80 & 8010
-1. Concurrency
-  Scale out via the process model
+1. Concurrency<br>
+  Scale out via the process model<br>
   :white_check_mark: Keep your sessions in Redis or DB
-1. Disposability
-  Maximize robustness with fast startup and graceful shutdown
+1. Disposability<br>
+  Maximize robustness with fast startup and graceful shutdown<br>
   :white_check_mark: Thank Docker!
-1. Dev/Prod parity
-  Keep development, staging, and production as similar as possible
+1. Dev/Prod parity<br>
+  Keep development, staging, and production as similar as possible<br>
   :white_check_mark: Yup
-1. Logs
-  Treat logs as event streams
+1. Logs<br>
+  Treat logs as event streams<br>
   :construction: ToDo
-1. Admin Processes
-  Run admin/management tasks as one-off processes
+1. Admin Processes<br>
+  Run admin/management tasks as one-off processes<br>
   :no_entry_sign: Does not Apply
 
 
