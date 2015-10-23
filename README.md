@@ -1,14 +1,59 @@
 # dockdj
 
-:ship: A recipe for deploying multi-container NGINX & Python / Django apps
-to Amazon AWS using Elastic Beanstalk.
+:ship: A recipe for building 12-factor Python / Django web apps with
+multi-container Docker and deploying to Amazon AWS using Elastic Beanstalk.
+
+The aim of Dockdj is to provide an example of how to quickly create a
+Django web application following the [Twelve Factor](https://12factor.net/)
+App principals.
+
+The Twelve Factors
+
+1. Codebase
+  One codebase tracked in revision control, many deploys
+  :white_check_mark: Yup, GitHub
+1. Dependencies
+  Explicitly declare and isolate dependencies
+  :white_check_mark: Yup, uses requirements.txt
+1. Config
+  Store config in the environment
+  :white_check_mark: Yup, uses .env files
+1. Backing Services
+  Treat backing services as attached resources
+  :white_check_mark: BYOBacking service
+1. Build, release, run
+  Strictly separate build and run stages
+  :white_check_mark: gulp, bin/image, bin/stevedore, bin/deploy
+1. Processes
+  Execute the app as one or more stateless processes
+  :white_check_mark: Thanks Docker!
+1. Port binding
+  Export services via port binding
+  :white_check_mark: 80 & 8010
+1. Concurrency
+  Scale out via the process model
+  :white_check_mark: Keep your sessions in Redis or DB
+1. Disposability
+  Maximize robustness with fast startup and graceful shutdown
+  :white_check_mark: Thank Docker!
+1. Dev/Prod parity
+  Keep development, staging, and production as similar as possible
+  :white_check_mark: Yup
+1. Logs
+  Treat logs as event streams
+  :construction: ToDo
+1. Admin Processes
+  Run admin/management tasks as one-off processes
+  :no_entry_sign: Does not Apply
+
 
 
 ## Contents
 
-This repo contains a simple Python Django 1.8 web app source code as well
-the configuration for both Django and NGINX Docker images. There are also
-some Bash scripts to help automate the process.
+This repo contains a simple Python Django 1.8 web app as well as the
+configuration for both Django and NGINX Docker images. There are
+also some Bash scripts to help automate the build, release and
+deploy process.
 
 **Stack**
 * Python 3.4
