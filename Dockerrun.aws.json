@@ -7,21 +7,15 @@
     },
     "volumes": [
         {
-            "name": "django",
+            "name": "dist",
             "host": {
-                "sourcePath": "/var/app/current"
+                "sourcePath": "/var/app/current/app/dist"
             }
         },
         {
             "name": "gunicorn-conf",
             "host": {
                 "sourcePath": "/var/app/current/docker/django/prod/gunicorn.conf.py"
-            }
-        },
-        {
-            "name": "nginx-static",
-            "host": {
-                "sourcePath": "/var/app/current/app/dist"
             }
         },
         {
@@ -44,10 +38,6 @@
             "essential": true,
             "memory": 512,
             "mountPoints": [
-                {
-                    "sourceVolume": "django",
-                    "containerPath": "/var/app"
-                },
                 {
                     "sourceVolume": "gunicorn-conf",
                     "containerPath": "/etc/gunicorn/gunicorn.conf.py",
@@ -75,8 +65,8 @@
             ],
             "mountPoints": [
                 {
-                    "sourceVolume": "nginx-static",
-                    "containerPath": "/usr/share/nginx/html/static"
+                    "sourceVolume": "dist",
+                    "containerPath": "/var/app/app/dist"
                 },
                 {
                     "sourceVolume": "nginx-conf",

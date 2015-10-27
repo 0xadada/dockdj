@@ -22,7 +22,8 @@ RUN             apt-get update && \
                     environments/dev/requirements.txt && \
                 npm update && \
                 npm install -g gulp && \
-                npm install
+                npm install && \
+                gulp
 
 # Add our initialization script to the image and run it upon startup.
 ADD             docker/django/start.sh /

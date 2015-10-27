@@ -22,7 +22,8 @@ RUN             apt-get update && \
                     environments/prod/requirements.txt && \
                 npm update && \
                 npm install -g gulp && \
-                npm install
+                npm install && \
+                gulp build
 
 # Exposes port 8080
 EXPOSE          8080

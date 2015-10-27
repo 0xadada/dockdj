@@ -3,9 +3,11 @@ django:
   dockerfile: docker/django/dev/Dockerfile
   env_file: ../../../environments/dev/.env
   volumes:
-    - "../../../app:/var/app/app"
+    - "../../../app/apps:/var/app/app/apps"
     - "../../../app/dist:/var/app/app/dist"
+    - "../../../app/manage.py:/var/app/app/manage.py"
     - "../../../environments:/var/app/environments"
+    - "../../../gulpfile.js:/var/app/gulpfile.js"
     - "../../../project:/var/app/project"
   ports:
     - "80:8080"
