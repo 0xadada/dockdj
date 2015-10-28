@@ -1,6 +1,9 @@
 # Elastic Beanstalk Files
+.coverage
 .ebextensions/*
 .elasticbeanstalk/*
+.ebignore
+.dockerignore
 .git
 .gitignore
 .DS_Store
@@ -10,7 +13,9 @@
 node_modules
 
 # Ignore files not required for the runtime.
+app/dist
 docs
+htmlcov
+
 README.md
 ghostdriver.log
-htmlcov

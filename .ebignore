@@ -13,6 +13,7 @@
 
 # Except for these exclusion patterns required by Amazon ECS
 !Dockerrun.aws.json
+!.ebextensions/*.config
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 !app/dist/**
