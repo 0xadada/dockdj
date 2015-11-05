@@ -77,7 +77,7 @@ needed by the `bin/install` script;
 
 Additionally these requirements are installed:
 
-* [boot2docker](https://github.com/boot2docker/boot2docker-cli)
+* [docker-machine](https://www.docker.com/docker-machine)
 * Docker & [Docker-compose](https://docs.docker.com/compose/)
 * Amazon Web Services
   [Elastic Beanstalk CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html)

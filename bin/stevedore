@@ -46,9 +46,9 @@ awseb() {
 # Initialize the Docker environment variables.
 shellinit() {
     # Set the Docker environment variables in your shell,
-    # if boot2docker exists
-    if hash boot2docker 2> /dev/null; then
-        eval "$(boot2docker shellinit)"
+    # if docker-machine exists
+    if hash docker-machine 2> /dev/null; then
+        eval "$(docker-machine env docker-vm)"
     fi
 }
 
@@ -199,7 +199,7 @@ start() {
         #     --rm \
         #     -e ENV_NAME=$ENV_NAME \
         #     -e ENV_DEBUG=$ENV_DEBUG \
-        #     -e ENV_CDN=//`boot2docker ip`:8010/ \
+        #     -e ENV_CDN=//`docker-machine ip docker-vm`:8010/ \
         #     -e ENV_SECRET_KEY=$STEM_SECRET_KEY \
         #     -v $(pwd)/apps:/var/app/apps \
         #     --name django \
@@ -216,7 +216,7 @@ start() {
             echo "Opening browser and tailing logs..."
             # Open in a browser
             sleep 4 # Give the container a few seconds to spin up.
-            open http://`boot2docker ip`/health # Open in the browser.
+            open http://`docker-machine ip docker-vm`/health # Open in the browser.
 
             # Show the logs
             docker-compose \

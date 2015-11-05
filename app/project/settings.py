@@ -391,3 +391,66 @@ STATICFILES_DIRS = (
 # To just copy them over to the STATIC_ROOT, use StaticFilesStorage.
 # https://docs.djangoproject.com/en/1.8/ref/contrib/staticfiles/#staticfilesstorage
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+
+#############################################################################
+#
+# LOGGING
+#
+#############################################################################
+
+# 12factor methodology is just to stream logs to STDOUT, and let deployment
+# runtime environments collect the stream for post-processing.
+# That way the application itself doesn't know or care about where the logs
+# go/end up. The deployment architecture handles that instead.
+LOG_LEVEL = 'INFO'
+if ENV_VARS['ENV_LOG_LEVEL']:
+    LOG_LEVEL = ENV_VARS['ENV_LOG_LEVEL']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    # What kinds of formatters should we use to format each log line?
+    'formatters': {
+        # Verbose log formatting:
+        # "[03/Nov/2015 18:23:03] INFO [simple:simple.py:73] Its healthy!"
+        'verbose': {
+            'format': "[%(asctime)s] %(levelname)s [%(module)s:%(filename)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+        # simple and terse verbosity:
+        # "INFO Its healthy!"
+        'simple': {
+            'format': '%(levelname)s %(message)s',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'nara': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+        },
+        'django.security': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+        },
+    },
+}

@@ -13,6 +13,13 @@ from django.shortcuts import render
 # We're going to do some stuff, only if DEBUG mode is on.
 from django.conf import settings
 
+# Logging
+import logging
+
+
+# Get an instance of a logger
+logger = logging.getLogger('nara')
+
 
 class Simple(View):
 
@@ -56,11 +63,16 @@ class Simple(View):
         env_vars.sort(key=str.lower)
 
         # What data should we send to the template?
+        health_msg = 'Its healthy!'
+
         template_data = {
             'foo': 'bar',
-            'message': 'Its healthy!',
+            'message': health_msg,
             'env_vars': env_vars,
         }
+
+        # Log the health message
+        logger.info(health_msg)
 
         # Now render the data and the template.
         return render(request, template, template_data)

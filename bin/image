@@ -41,9 +41,9 @@ build() {
     fi
 
     # Set the Docker environment variables in your shell,
-    # if boot2docker exists
-    if hash boot2docker 2> /dev/null; then
-        eval "$(boot2docker shellinit)"
+    # if docker-machine exists
+    if hash docker-machine 2> /dev/null; then
+        eval "$(docker-machine env docker-vm)"
     fi
 
     # Try to detect if the django container is running.

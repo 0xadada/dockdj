@@ -12,11 +12,11 @@ if ! [ -x /usr/local/bin/brew ]; then
     open "http://brew.sh/"
     exit 1
 fi
-if ! hash boot2docker 2>/dev/null; then
-    echo "Installing boot2docker..."
-    brew install boot2docker
-    # Start boot2docker via launchd at login
-    ln -sfv /usr/local/opt/boot2docker/*.plist ~/Library/LaunchAgents
+if ! hash docker-machine 2>/dev/null; then
+    echo "Installing docker-machine..."
+    brew install docker-machine
+    # Start docker-machine via launchd at login
+    ln -sfv /usr/local/opt/docker-machine/*.plist ~/Library/LaunchAgents
 fi
 if ! hash docker-compose 2>/dev/null; then
     echo "Installing docker-compose..."
@@ -28,19 +28,19 @@ if ! hash eb 2>/dev/null; then
 fi
 
 # Create Docker VM if it doesn't exist
-boot2docker status
+docker-machine ls
 if [[ $? != 0 ]]; then
     echo "Creating Docker host virtual machine..."
-    boot2docker init
+    docker-machine create --driver virtualbox docker-vm
     echo "Docker host virtual machine created."
 else
     echo "Docker host virtual machine found."
 fi
 
 # Start Docker VM if it is not running.
-if [ -z "$(boot2docker status | grep running)" ]; then
+if [ -z "$(docker-machine ls | grep -i running)" ]; then
     echo "Docker host virtual machine not running, booting now..."
-    boot2docker start
+    docker-machine start
     echo "Docker host virtual machine is running."
 else
     echo "Docker host virtual machine is running."

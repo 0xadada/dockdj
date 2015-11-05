@@ -139,16 +139,16 @@ gulp.task('browser-sync', function() {
 
 
 /* run:browser-sync:
- * Fetch boot2docker IP from the command line to run browser-sync.
+ * Fetch docker-machine IP from the command line to run browser-sync.
  */
 gulp.task('run:browser-sync', function() {
     var exec = require('child_process').exec,
         child;
-    child = exec('boot2docker ip',
+    child = exec('docker-machine ip docker-vm',
         function (error, stdout, stderr) {
-            // if boot2docker ran without error, run browser-sync
+            // if docker-machine ran without error, run browser-sync
             config.browserSync.proxy = stdout;
-            console.log('boot2docker container running at:', stdout)
+            console.log('docker-machine container running at:', stdout)
             // start browser sync
             gulp.start('browser-sync');
         }
