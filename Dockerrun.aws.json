@@ -42,10 +42,6 @@
                     "sourceVolume": "gunicorn-conf",
                     "containerPath": "/etc/gunicorn/gunicorn.conf.py",
                     "readOnly": true
-                },
-                {
-                    "sourceVolume": "awseb-logs-django",
-                    "containerPath": "/var/log/gunicorn"
                 }
             ]
         },
@@ -77,10 +73,6 @@
                     "sourceVolume": "nginx-sites-enabled",
                     "containerPath": "/etc/nginx/conf.d/default.conf",
                     "readOnly": true
-                },
-                {
-                    "sourceVolume": "awseb-logs-nginx",
-                    "containerPath": "/var/log/nginx"
                 }
             ]
         }
