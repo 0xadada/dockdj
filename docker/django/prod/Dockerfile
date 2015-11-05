@@ -28,11 +28,6 @@ RUN             apt-get update && \
 # Exposes port 8080
 EXPOSE          8080
 
-# Create app log directories and touch log files
-RUN             mkdir /var/log/gunicorn && \
-                touch /var/log/gunicorn/access.log && \
-                touch /var/log/gunicorn/error.log
-
 # Add our initialization script to the image and run it upon startup.
 ADD             docker/django/start.sh /
 ADD             docker/django/prod/gunicorn.conf.py /etc/gunicorn/gunicorn.conf.py

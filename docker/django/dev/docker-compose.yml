@@ -5,10 +5,10 @@ django:
   volumes:
     - "../../../app/apps:/var/app/app/apps"
     - "../../../app/dist:/var/app/app/dist"
+    - "../../../app/project:/var/app/app/project"
     - "../../../app/manage.py:/var/app/app/manage.py"
     - "../../../environments:/var/app/environments"
     - "../../../gulpfile.js:/var/app/gulpfile.js"
-    - "../../../project:/var/app/project"
   ports:
     - "80:8080"
     - "8010:8010"
