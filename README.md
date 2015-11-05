@@ -41,7 +41,7 @@ App principals.
   :white_check_mark: Yup
 1. **Logs**<br>
   Treat logs as event streams<br>
-  :construction: ToDo
+  :white_check_mark: Yup
 1. **Admin Processes**<br>
   Run admin/management tasks as one-off processes<br>
   :no_entry_sign: Does not Apply
