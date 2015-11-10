@@ -1,21 +1,26 @@
 # Elastic Beanstalk Files
-.coverage
-.ebextensions/*
-.elasticbeanstalk/*
+.ebextensions
+.elasticbeanstalk
 .ebignore
-.dockerignore
-.git
-.gitignore
-.DS_Store
 
 # Docker container installs its own (Linux) dependencies, the host may
 # run OS X or windows, so don't include pre-existing node modules.
 node_modules
 
 # Ignore files not required for the runtime.
-app/dist
+.DS_Store
+.coverage
+.dockerignore
+.git
+.gitignore
+.python-version
+README.md
+Dockerrun.aws.json
 docs
+ghostdriver.log
 htmlcov
 
-README.md
-ghostdriver.log
+
+# Ignore assets in the local file system, don't push these into the
+# Docker build context as they're rebuilt during Docker image build.
+app/dist

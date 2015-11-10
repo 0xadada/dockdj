@@ -17,7 +17,7 @@ node_modules
 ._*
 *~
 
-# Ignore OS generated files #
+# Ignore OS generated files
 .DS_Store*
 Icon?
 Thumbs.db
@@ -31,6 +31,7 @@ environments/*/.env
 environments/*/pyvenv
 
 # Elastic Beanstalk Files
+.ebextensions
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml

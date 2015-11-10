@@ -1,0 +1,80 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "_uncomment_authentication": {
+        "bucket": "<AWS S3 bucket name>",
+        "key": "<path to configuration file e.g.: index.docker.io/.dockercfg>",
+        "note": "remove _uncomment_ to enable authentication with a private Docker repo"
+    },
+    "volumes": [
+        {
+            "name": "dist",
+            "host": {
+                "sourcePath": "/var/app/current/app/dist"
+            }
+        },
+        {
+            "name": "gunicorn-conf",
+            "host": {
+                "sourcePath": "/var/app/current/docker/django/prod/gunicorn.conf.py"
+            }
+        },
+        {
+            "name": "nginx-conf",
+            "host": {
+                "sourcePath": "/var/app/current/docker/nginx/nginx.conf"
+            }
+        },
+        {
+            "name": "nginx-sites-enabled",
+            "host": {
+                "sourcePath": "/var/app/current/docker/nginx/sites-enabled.conf"
+            }
+        }
+    ],
+    "containerDefinitions": [
+        {
+            "name": "django",
+            "image": "0xadada/dockdj:prod",
+            "essential": true,
+            "memory": 512,
+            "mountPoints": [
+                {
+                    "sourceVolume": "gunicorn-conf",
+                    "containerPath": "/etc/gunicorn/gunicorn.conf.py",
+                    "readOnly": true
+                }
+            ]
+        },
+        {
+            "name": "nginx",
+            "image": "nginx",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": [
+                "django"
+            ],
+            "mountPoints": [
+                {
+                    "sourceVolume": "dist",
+                    "containerPath": "/var/app/app/dist"
+                },
+                {
+                    "sourceVolume": "nginx-conf",
+                    "containerPath": "/etc/nginx/nginx.conf",
+                    "readOnly": true
+                },
+                {
+                    "sourceVolume": "nginx-sites-enabled",
+                    "containerPath": "/etc/nginx/conf.d/default.conf",
+                    "readOnly": true
+                }
+            ]
+        }
+    ]
+}

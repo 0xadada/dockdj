@@ -60,7 +60,10 @@ build() {
         echo "Building Docker images..."
         docker-compose \
             -f docker/django/$ENV_NAME/docker-compose.yml \
-            build
+            build \
+            --no-cache
+        # Tag with a generic name
+        docker tag -f $ENV_NAME"_django" "dockdj_app"
     fi
 }
 

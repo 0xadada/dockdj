@@ -7,7 +7,9 @@
 help_usage() {
     echo "Utility to more easily release and deploy code."
     echo ""
-    echo "Usage: $ deploy COMMAND <version>"
+    echo "Usage: $ deploy COMMAND <environment> [<version>]"
+    echo ""
+    echo "If <version> is not specified, an untagged (latest) will be used."
     echo ""
     help_commands
     echo "version follows the format M.m.p where:"
@@ -16,7 +18,8 @@ help_usage() {
     echo "    p Patch - Backwards compatible patch or bugfixes"
     echo ""
     echo "e.g."
-    echo "$ $0 publish 1.2.3"
+    echo "$ $0 publish dev"
+    echo "$ $0 publish prod 1.2.3"
 }
 
 
@@ -32,7 +35,7 @@ help_commands() {
 
 # Tag and create a release branch and Docker image
 release() {
-    docker images | grep -iq "prod_django"
+    docker images | grep -iq "dockdj_app"
     NO_IMAGE=$?
     # if image is missing:
     if [ $NO_IMAGE == 1 ]; then
@@ -47,53 +50,61 @@ release() {
     # Fetch all latest branches and tags from GitHub
     git fetch origin > /dev/null 2>&1
 
-    # If this release is a hotfix:
-    if [ $PATCH -gt 0 ]; then
-        # ToDo: Verify that the release branch exists
-        git branch --list --all | grep -iq "remotes/origin/release-v$MAJOR_MINOR"
-        NO_RELEASE=$?
-        if [ $NO_RELEASE == 0 ]; then
-            # Branch exists, checkout the release branch
-            git checkout "release-v$MAJOR_MINOR"
+    # Tag the docker image with the "latest" or "prod" tag
+    echo "Tagging Docker image: $ENV_DOCKER_HUB_REPO_PATH:$TAG"
+    docker tag -f "dockdj_app" $ENV_DOCKER_HUB_REPO_PATH":"$TAG
+
+    # If a versioned release was specified: tag and branch the release
+    if [[ -n $VERSION ]]; then
+
+        # If this release is a hotfix:
+        if [ $PATCH -gt 0 ]; then
+            # ToDo: Verify that the release branch exists
+            git branch --list --all | grep -iq "remotes/origin/release-v$MAJOR_MINOR"
+            NO_RELEASE=$?
+            if [ $NO_RELEASE == 0 ]; then
+                # Branch exists, checkout the release branch
+                git checkout "release-v$MAJOR_MINOR"
+            else
+                # Release branch doesn't exist, throw error.
+                echo "Error: Release branch 'release-v$MAJOR_MINOR' not found."
+                echo "    Cannot create a PATCH release without an original release."
+                exit 1
+            fi
+        # Else this release branches off master
         else
-            # Release branch doesn't exist, throw error.
-            echo "Error: Release branch 'release-v$MAJOR_MINOR' not found."
-            echo "    Cannot create a PATCH release without an original release."
-            exit 1
+            # Checkout master
+            git checkout -f master
         fi
 
-    # Else this release branches off master
-    else
-        # Checkout master
-        git checkout -f master
+        # Tag the docker image with the release version
+        echo "Tagging Docker image: $ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+        docker tag -f "$ENV_NAME_django" "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+
+        # Tag with version vM.m.p
+        echo "Tagging branch: v$VERSION"
+        git tag -a "v$VERSION" \
+            -m "Release v$VERSION" \
+            -m "" \
+            -m "`git log $(git describe --abbrev=0 --tags).. --pretty=format:"* %s - @%an"`"
+
+        # If this release is a new release, create release branch.
+        if [ $PATCH == 0 ]; then
+            # Create release branch
+            echo "Creating a release branch: release-v$MAJOR_MINOR"
+            git checkout -b "release-v$MAJOR_MINOR"
+        fi
+
+        # wrap up
+        echo ""
+        echo "On branch: release-v$MAJOR_MINOR"
+
     fi
 
-    # Tag the docker image
-    echo "Tagging Docker image:"
-    echo "    $ENV_DOCKER_HUB_REPO_PATH:$VERSION"
-    echo "    $ENV_DOCKER_HUB_REPO_PATH:latest"
-    docker tag -f "prod_django" "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
-    docker tag -f "prod_django" "$ENV_DOCKER_HUB_REPO_PATH:latest"
-
-    # Tag with version vM.m.p
-    echo "Tagging branch: v$VERSION"
-    git tag -a "v$VERSION" \
-        -m "Release v$VERSION" \
-        -m "" \
-        -m "`git log $(git describe --abbrev=0 --tags).. --pretty=format:"* %s - @%an"`"
-
-    # If this release is a new release, create release branch.
-    if [ $PATCH == 0 ]; then
-        # Create release branch
-        echo "Creating a release branch: release-v$MAJOR_MINOR"
-        git checkout -b "release-v$MAJOR_MINOR"
-    fi
-
-    # wrap up
     echo ""
     echo "Release complete."
-    echo "    On branch: release-v$MAJOR_MINOR"
-    exit $?
+
+    exit 0
 }
 
 
@@ -107,27 +118,34 @@ publish() {
         echo "Error: No image tagged with this version exists."
         echo ""
         echo "Try:"
-        echo "'./bin/deploy release $VERSION' to tag this version."
+        echo "'$ ./bin/deploy publish dev' to publish a dev release."
+        echo "'$ ./bin/deploy publish prod 1.2.3' to publish a version."
         exit 1
     fi
 
     # Push image to docker Hub
     echo "Docker Hub repo path: $ENV_DOCKER_HUB_REPO_PATH"
     echo "Publishing image to Docker Hub..."
-    echo "    $ENV_DOCKER_HUB_REPO_PATH:$VERSION"
-    echo "    $ENV_DOCKER_HUB_REPO_PATH:latest"
-    docker push "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
-    docker push "$ENV_DOCKER_HUB_REPO_PATH:latest"
 
-    # Push release branch to GitHub
-    echo "Publishing release branch & tags to GitHub..."
-    echo "    release-v$MAJOR_MINOR"
-    git push --tags origin "release-v$MAJOR_MINOR"
+    # first: push the basic tag to Docker Hub
+    echo "    $ENV_DOCKER_HUB_REPO_PATH:$TAG"
+    docker push "$ENV_DOCKER_HUB_REPO_PATH:$TAG"
+
+    # If a versioned release was specified:
+    if [[ -n $VERSION ]]; then
+        # second: push the version tag to Docker hub
+        echo "    $ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+        docker push "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+        # Push release branch to GitHub
+        echo "Publishing release branch & tags to GitHub..."
+        echo "    release-v$MAJOR_MINOR"
+        git push --tags origin "release-v$MAJOR_MINOR"
+    fi
 
     # wrap up
     echo ""
     echo "Publish complete."
-    exit $?
+    exit 0
 }
 
 
@@ -148,8 +166,19 @@ deploy() {
     echo "Amazon AWS Elastic Beanstalk environment name: $ENV_AWS_EB_ENVIRONMENT_NAME"
     echo "Deploying release to Amazon AWS Elastic Beanstalk..."
 
+    # mv Dockerrun.aws.json file into place for EB Deploy
+    cp "environments/$ENV_NAME/Dockerrun.aws.json" .
+    # mv environment settings files into place for EB Deploy
+    mkdir -p .ebextensions # create EB settings dir (if it doesn't exist)
+    cp "environments/$ENV_NAME/01_envvars.config" .ebextensions/01_envvars.config
+
     eb deploy
     DEPLOY_STATUS=$?
+
+    # Remove Dockerrun.aws.json
+    rm Dockerrun.aws.json
+    # Remove eb environment settings
+    rm -rf .ebextensions
 
     # wrap up
     echo ""
@@ -176,20 +205,37 @@ if [[ -z $COMMAND ]] || \
     exit 1
 fi
 
-# Get the version number from the arguments
-VERSION=$2
-if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9] ]]; then
-    echo $COMMAND "v"$VERSION
-    MAJOR_MINOR=$(echo $VERSION | grep -oE '^[0-9]+\.[0-9]+')
-    PATCH=$(echo $VERSION | grep -oE '[0-9]$')
-else
-    echo "Error: Version number must follow SemVer syntax: n.n.n"
+# Check for an environment argument.
+ENV_NAME=$2
+if [[ -z $ENV_NAME ]]; then
+    echo "Error: Specify an environment name."
     echo ""
+    help_commands
     exit 1
 fi
 
+# Set our dev docker repo tags to "latest",
+TAG=$ENV_NAME
+if [[ $ENV_NAME == "dev" ]]; then
+    TAG=latest
+fi
+
+# Get the version number from the arguments
+VERSION=$3
+if [[ -n $VERSION ]]; then
+    if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9] ]]; then
+        echo $COMMAND "v"$VERSION
+        MAJOR_MINOR=$(echo $VERSION | grep -oE '^[0-9]+\.[0-9]+')
+        PATCH=$(echo $VERSION | grep -oE '[0-9]$')
+    else
+        echo "Error: Version number must follow SemVer syntax: n.n.n"
+        echo ""
+        exit 1
+    fi
+fi
+
 # Check the Amazon AWS Environment name sourced from the .env file.
-source environments/dev/.env
+source "environments/$ENV_NAME/.env"
 if [ -z $ENV_AWS_EB_ENVIRONMENT_NAME ]; then
     echo "Error: ENV_AWS_EB_ENVIRONMENT_NAME must be set in .env file"
     echo ""
