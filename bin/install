@@ -40,7 +40,7 @@ fi
 # Start Docker VM if it is not running.
 if [ -z "$(docker-machine ls | grep -i running)" ]; then
     echo "Docker host virtual machine not running, booting now..."
-    docker-machine start
+    docker-machine start docker-vm
     echo "Docker host virtual machine is running."
 else
     echo "Docker host virtual machine is running."
