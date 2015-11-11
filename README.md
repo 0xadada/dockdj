@@ -84,28 +84,31 @@ CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html)
 
 These steps will get you running locally:
 
-1. `./bin/install` Provisions your local development machine for
-the first time. It will
-  * Installs all requirements (if they don't exist)
-  * Initializes and starts a Docker virtual machine
+1. `./bin/install` will provision your local development machine for
+  the first time. It will
+  * install all requirements (if they don't exist)
+  * creates and starts a Docker virtual machine
 1. Copy `environments/dev/.env.example` to `environments/dev/.env` and
-   edit the values. Please make sure to change the following keys:
-  * `ENV_SECRET_KEY` create your own
-  [Django secret key](https://docs.djangoproject.com/en/dev/ref/settings/#secret-key)
+  edit the values. Please make sure to change the following keys:
+  * `ENV_SECRET_KEY` create your own [Django secret
+    key](https://docs.djangoproject.com/en/dev/ref/settings/#secret-key)
   * `ENV_CDN` to your Docker host IP: `docker-machine ip docker-vm`
-  * `ENV_AWS_EB_ENVIRONMENT_NAME` to your Amazon AWS Elastic Beanstalk
-    environment name
-  * `ENV_DOCKER_HUB_REPO_PATH` to your Docker repo (Create one if you
-    plan to publish images to Docker Hub.)
-1. Create a "dev" python environment: `pyvenv environments/dev/pyvenv`
-1. `./bin/image dev build` Creates "dev" Docker images with all
-dependencies installed.
-1. `./bin/stevedore dev start` will run the "dev" Docker containers, open
-the browser, and tail the logs. At this point you're viewing running
-source code.
+  * Optionally:
+    * `ENV_AWS_EB_ENVIRONMENT_NAME` to your Amazon AWS Elastic Beanstalk
+      environment name
+    * `ENV_DOCKER_HUB_REPO_PATH` to your Docker repo (Create one if you
+      plan to publish images to Docker Hub.)
+1. Create a dev python environment: `pyvenv environments/dev/pyvenv`
+1. `./bin/image dev build` will create "dev" Docker images with all
+   dependencies installed.
+1. `./bin/stevedore dev start` will run the dev Docker containers, open
+   the browser, and tail the logs. At this point you're viewing running
+   source code!
   * `ctrl+c` stops the logs `./bin/stevedore dev stop` will stop the Docker
-containers.
+    containers.
   * `./bin/stevedore dev logs` resumes log tailing.
+1. Optionally, to build frontend assets (CSS, images, etc):
+  * Run `./bin/stevedore dev build:dev`
 
 You can typically connect to your web application at:
 http://192.168.99.100/xyzzy.
