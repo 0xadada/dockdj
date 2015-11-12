@@ -60,7 +60,6 @@ deploy process.
 * Django 1.8
 * Gunicorn app server
 * Nginx web server
-* MySQL
 * Sass css preprocessor
 * Bootstrap 4-alpha CSS framework
 * Gulp build system
