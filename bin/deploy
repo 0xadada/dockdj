@@ -52,7 +52,7 @@ release() {
 
     # Tag the docker image with the "latest" or "prod" tag
     echo "Tagging Docker image: $ENV_DOCKER_HUB_REPO_PATH:$TAG"
-    docker tag -f "dockdj_app" $ENV_DOCKER_HUB_REPO_PATH":"$TAG
+    docker tag "dockdj_app" $ENV_DOCKER_HUB_REPO_PATH":"$TAG
 
     # If a versioned release was specified: tag and branch the release
     if [[ -n $VERSION ]]; then
@@ -79,7 +79,7 @@ release() {
 
         # Tag the docker image with the release version
         echo "Tagging Docker image: $ENV_DOCKER_HUB_REPO_PATH:$VERSION"
-        docker tag -f "$ENV_NAME_django" "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
+        docker tag "$ENV_NAME_django" "$ENV_DOCKER_HUB_REPO_PATH:$VERSION"
 
         # Tag with version vM.m.p
         echo "Tagging branch: v$VERSION"
