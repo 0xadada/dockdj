@@ -63,7 +63,7 @@ build() {
             build \
             --no-cache
         # Tag with a generic name
-        docker tag -f $ENV_NAME"_django" "dockdj_app"
+        docker tag $ENV_NAME"_django" "dockdj_app"
     fi
 }
 
