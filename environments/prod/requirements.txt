@@ -1,7 +1,7 @@
-Django==1.8
-django-extensions==1.5.5
-django-pipeline==1.5.1
-honcho==0.6.6
-gunicorn==19.3.0
-pep257==0.6.0
+Django==1.9
+django-extensions==1.6
+django-pipeline==1.5
+honcho==0.6
+pep257==0.6
+gunicorn==19.3
 six==1.9.0

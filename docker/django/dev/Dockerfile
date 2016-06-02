@@ -5,7 +5,7 @@
 # Python: 3.4
 # Application Server: ./manage.py runserver_plus
 
-FROM            python:3.4
+FROM            python:3.5
 
 MAINTAINER      Ron. A @0xADADA
 

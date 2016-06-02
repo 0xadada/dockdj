@@ -3,6 +3,15 @@
 # Author Ron. A @0xADADA
 
 
+# Run docker as sudo if in linux
+if [[ $OSTYPE == darwin* ]]; then
+    DOCKER="docker"
+    DOCKER_COMPOSE="docker-compose"
+elif [[ $OSTYPE == linux* ]]; then
+    DOCKER="sudo docker"
+    DOCKER_COMPOSE="sudo docker-compose"
+fi
+
 # Print out usage documentation.
 help_usage() {
     echo "Stevedore (stēˈvĭ-dôr) - Manhandling your containers."
@@ -14,6 +23,7 @@ help_usage() {
     echo "e.g."
     echo "$ $0 dev start"
 }
+
 
 # Print out commands.
 help_commands() {
@@ -173,7 +183,7 @@ logs() {
         echo "Tailing Docker container logs..."
         docker-compose \
             -f docker/django/$ENV_NAME/docker-compose.yml \
-            logs
+            logs --follow
         exit 0
     else
         help_not_running
@@ -216,13 +226,17 @@ start() {
             echo "Opening browser and tailing logs..."
             # Open in a browser
             sleep 4 # Give the container a few seconds to spin up.
-            open http://`docker-machine ip docker-vm`/health # Open in the browser.
 
-            # Show the logs
-            docker-compose \
-                -f docker/django/$ENV_NAME/docker-compose.yml \
-                logs
-            exit 0
+            if hash docker-machine 2> /dev/null; then
+                open http://`docker-machine ip docker-vm`/xyzzy # Open in the browser.
+            else
+                if hash firefox 2> /dev/null; then
+                    firefox http://localhost/xyzzy # Open in the browser.
+                fi
+            fi
+
+            # Show the logs and follow output
+            logs
         else
             echo ""
             echo "Error: Docker failed to run the container."

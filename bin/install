@@ -2,51 +2,70 @@
 # OS X development initialization script.
 # Author Ron. A @0xADADA
 
+if [[ $OSTYPE == darwin* ]]; then
+    # OS X
+    echo "Installing deps for OS X / Darwin"
+    # Install homebrew is installed.development machine local dependencies
+    if ! [ -x /usr/local/bin/brew ]; then
+        echo "homebrew must be installed. Please install and try this again."
+        echo "brew is typically installed with the following command:"
+        echo "$ ruby -e \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\""
+        echo "Opening homebrew website..."
+        open "http://brew.sh/"
+        exit 1
+    fi
+    if ! hash docker-machine 2>/dev/null; then
+        echo "Installing docker-machine..."
+        brew install docker-machine
+        # Start docker-machine via launchd at login
+        ln -sfv /usr/local/opt/docker-machine/*.plist ~/Library/LaunchAgents
+    fi
+    if ! hash docker-compose 2>/dev/null; then
+        echo "Installing docker-compose..."
+        brew install docker-compose
+    fi
+    if ! hash eb 2>/dev/null; then
+        echo "Installing Amazon Elastic Beanstalk CLI..."
+        brew install aws-elasticbeanstalk
+    fi
 
-# Install homebrew is installed.development machine local dependencies
-if ! [ -x /usr/local/bin/brew ]; then
-    echo "homebrew must be installed. Please install and try this again."
-    echo "brew is typically installed with the following command:"
-    echo "$ ruby -e \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\""
-    echo "Opening homebrew website..."
-    open "http://brew.sh/"
-    exit 1
-fi
-if ! hash docker-machine 2>/dev/null; then
-    echo "Installing docker-machine..."
-    brew install docker-machine
-    # Start docker-machine via launchd at login
-    ln -sfv /usr/local/opt/docker-machine/*.plist ~/Library/LaunchAgents
-fi
-if ! hash docker-compose 2>/dev/null; then
-    echo "Installing docker-compose..."
-    brew install docker-compose
-fi
-if ! hash eb 2>/dev/null; then
-    echo "Installing Amazon Elastic Beanstalk CLI..."
-    brew install aws-elasticbeanstalk
+    # Create Docker VM if it doesn't exist
+    docker-machine ls | grep -q docker-vm
+    if [ $? -ne 0 ]; then
+        echo "Creating Docker host virtual machine..."
+        docker-machine create --driver virtualbox docker-vm
+        echo "Docker host virtual machine created."
+    else
+        echo "Docker host virtual machine found."
+    fi
+
+    # Start Docker VM if it is not running.
+    if [ -z "$(docker-machine ls | grep -i running)" ]; then
+        echo "Docker host virtual machine not running, booting now..."
+        docker-machine start docker-vm
+        echo "Docker host virtual machine is running."
+    else
+        echo "Docker host virtual machine is running."
+    fi
+# Linux
+elif [[ $OSTYPE == linux* ]]; then
+    # Arch Linux
+    if [ `type -P pacman` ]; then
+        echo "Installing deps for GNU/LINUX Arch Linux"
+        # Install docker compose (provides docker)
+        sudo pacman -S docker-compose
+        # start and enable docker service
+        sudo systemctl enable docker
+        sudo systemctl start docker
+    fi
 fi
 
-# Create Docker VM if it doesn't exist
-docker-machine ls
-if [[ $? != 0 ]]; then
-    echo "Creating Docker host virtual machine..."
-    docker-machine create --driver virtualbox docker-vm
-    echo "Docker host virtual machine created."
-else
-    echo "Docker host virtual machine found."
-fi
-
-# Start Docker VM if it is not running.
-if [ -z "$(docker-machine ls | grep -i running)" ]; then
-    echo "Docker host virtual machine not running, booting now..."
-    docker-machine start docker-vm
-    echo "Docker host virtual machine is running."
-else
-    echo "Docker host virtual machine is running."
-fi
 
 # Set the Docker environment variables in your shell
 echo "Your system is setup."
+echo ""
+echo "To build a development environment, try running:"
+echo "$ ./bin/image dev build"
+echo ""
 echo "To run a development environment, try running:"
 echo "$ ./bin/stevedore dev start"
