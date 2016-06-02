@@ -56,8 +56,8 @@ also some Bash scripts to help automate the build, release and
 deploy process.
 
 **Stack**
-* Python 3.4
-* Django 1.8
+* Python 3.5
+* Django 1.9
 * Gunicorn app server
 * Nginx web server
 * Sass css preprocessor
@@ -112,7 +112,7 @@ These steps will get you running locally:
 You can typically connect to your web application at:
 http://192.168.99.100/xyzzy.
 
-You should now be up and running. Welcome.
+You should now be up and running.
 
 
 ## Deployment
