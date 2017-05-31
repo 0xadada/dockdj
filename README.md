@@ -1,7 +1,9 @@
 # dockdj
 
-:ship: A recipe for building 12-factor Python / Django web apps with
+> :ship: A recipe for building 12-factor Python / Django web apps with
 multi-container Docker and deploying to Amazon AWS using Elastic Beanstalk.
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 The aim of Dockdj is to provide an example of how to quickly create a
 Django web application following the [Twelve Factor](https://12factor.net/)
