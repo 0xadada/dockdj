@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Release and deploy process management.
-# Author Ron. A @0xADADA
+# Author @0xADADA
 
 
 # Print out help documentation

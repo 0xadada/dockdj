@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Stevedore - Simple Docker container management.
-# Author Ron. A @0xADADA
+# Author @0xADADA
 
 
 # Print out usage documentation.

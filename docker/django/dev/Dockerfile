@@ -1,5 +1,5 @@
 # AWS Docker container configuration
-# Author Ron. A @0xADADA
+# Author @0xADADA
 # Container OS: Debian Jessie
 # Docker: 1.6.2
 # Python: 3.4
@@ -7,7 +7,7 @@
 
 FROM            python:3.4
 
-MAINTAINER      Ron. A @0xADADA
+MAINTAINER      @0xADADA
 
 WORKDIR         /var/app
 

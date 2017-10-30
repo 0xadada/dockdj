@@ -132,7 +132,7 @@ testing and deploying.
 
 ## Authors
 
-* [Ron. A](https://github.com/0xadada) -
+* [0xADADA](https://github.com/0xadada) -
   [@0xadada](http://twitter.com/0xadada)
 
 

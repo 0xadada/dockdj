@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Docker container endpoint.
-# Author Ron. A @0xADADA
+# Author @0xADADA
 
 
 # Move into the working directory.

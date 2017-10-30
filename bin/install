@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # OS X development initialization script.
-# Author Ron. A @0xADADA
+# Author @0xADADA
 
 
 # Install homebrew is installed.development machine local dependencies
@@ -28,7 +28,7 @@ if ! hash eb 2>/dev/null; then
 fi
 
 # Create Docker VM if it doesn't exist
-docker-machine ls
+docker-machine ls|grep "docker-vm"
 if [[ $? != 0 ]]; then
     echo "Creating Docker host virtual machine..."
     docker-machine create --driver virtualbox docker-vm

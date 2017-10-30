@@ -5,7 +5,7 @@
   "description": ":ship: A recipe for deploying multi-container NGINX & Python / Django apps to Amazon AWS using Elastic Beanstalk.",
   "authors": [
     {
-      "name": "Ron. A",
+      "name": "0xADADA",
       "email": "github.com@0xadada.pub",
       "twitter": "@0xADADA"
     }
